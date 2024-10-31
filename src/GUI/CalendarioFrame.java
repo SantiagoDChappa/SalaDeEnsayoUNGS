@@ -23,12 +23,14 @@ import java.text.SimpleDateFormat;
 import java.time.LocalDate;
 import java.time.ZoneId;
 import java.time.format.DateTimeFormatter;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.Hashtable;
 import java.util.Locale;
 
 import javax.imageio.ImageIO;
 import javax.swing.BorderFactory;
+import javax.swing.DefaultListModel;
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JFrame;
@@ -36,6 +38,7 @@ import javax.swing.JLabel;
 import javax.swing.JList;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
+import javax.swing.JScrollPane;
 import javax.swing.SwingConstants;
 import javax.swing.Timer;
 import javax.swing.border.BevelBorder;
@@ -46,20 +49,22 @@ import javax.swing.border.TitledBorder;
 
 import com.toedter.calendar.JDateChooser;
 
+import Entidades.Oferta;
 import Logica.CalendarioLogica;
+import Logica.GestorOferta;
 
 public class CalendarioFrame {
 	
 	private JFrame CalendarioFrame;
 	private JDateChooser buscadorFecha;
-	private CalendarioLogica Calendario;
+	private GestorOferta GestorOfertas;
     
 	public CalendarioFrame() {
     	initialize();
     }
     
 	private void initialize() {
-	    Calendario = new CalendarioLogica();  // Inicialización de TableroLogica
+        GestorOfertas = new GestorOferta();
 	    CalendarioFrame = new JFrame();
 	    CalendarioFrame.setIconImage(Toolkit.getDefaultToolkit().getImage("C:\\Users\\Usuario\\Desktop\\Nueva carpeta\\newCarpet\\Facultad\\Programacion3\\Proyectos\\TP3\\src\\imagenes\\logo_ungs.png"));
 	    CalendarioFrame.setTitle("Buscar ofertas por fechas - Sala de ensayo UNGS");
@@ -78,10 +83,10 @@ public class CalendarioFrame {
     	// Le pongo un background de color #0E1012
     	CalendarioFrame.getContentPane().setBackground(new Color(14, 16, 18));
 
-    	JList listadoResultado = new JList();
+    	/*JList listadoResultado = new JList();
     	listadoResultado.setFont(new Font("Microsoft YaHei UI", Font.PLAIN, 11));
     	listadoResultado.setBounds(44, 135, 1154, 515);
-    	CalendarioFrame.getContentPane().add(listadoResultado);
+    	CalendarioFrame.getContentPane().add(listadoResultado);*/
     	
     	JLabel lblMejoresOfertasFecha = new JLabel("Las mejores ofertas del dia: ");
     	lblMejoresOfertasFecha.setForeground(new Color(255, 255, 255));
@@ -94,6 +99,20 @@ public class CalendarioFrame {
     	btnBuscarOfertas.addActionListener(new ActionListener() {
     		public void actionPerformed(ActionEvent e) {
     			lblMejoresOfertasFecha.setText("Las mejores ofertas del dia: " + mostrarFecha(buscadorFecha.getDate()));
+    			
+    	        DefaultListModel<String> modeloLista = new DefaultListModel<>();
+    			ArrayList<Oferta> ofertas = GestorOfertas.obtenerOfertas(buscadorFecha.getDate());
+    			
+    			for (Oferta oferta : ofertas) {
+        	        modeloLista.addElement(oferta.toString());
+    			}
+
+    	        // Crear el JList y asignarle el modelo
+    	        JList<String> lista = new JList<>(modeloLista);
+
+    	        // Agregar el JList a un JScrollPane
+    	        JScrollPane scrollPane = new JScrollPane(lista);
+    	        CalendarioFrame.add(scrollPane, BorderLayout.CENTER);
     		}
     	});
     	btnBuscarOfertas.setBounds(767, 11, 186, 38);

@@ -7,7 +7,7 @@
 	</classpathentry>
 	<classpathentry excluding="src/" kind="src" path=""/>
 	<classpathentry kind="src" path="src"/>
-	<classpathentry kind="lib" path="C:/Users/Usuario/Desktop/Nueva carpeta/newCarpet/Facultad/Programacion3/Proyectos/TP3/lib/jcalendar-1.4.jar">
+	<classpathentry kind="lib" path="C:/Users/Usuario/Desktop/Nueva carpeta/newCarpet/Facultad/Programacion3/Proyectos/SalaDeEnsayoUngs/lib/jcalendar-1.4.jar">
 		<attributes>
 			<attribute name="module" value="true"/>
 		</attributes>
