@@ -2,6 +2,7 @@ package Logica;
 
 import java.io.BufferedWriter;
 import java.io.EOFException;
+import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.FileWriter;
@@ -31,13 +32,13 @@ public class GestorOferta {
     // Creo la oferta
     public void registrar(String nombreOfertante, Integer horarioInicio, Integer horarioSalida, Double montoOfrecido, Date fecha) {
     	 try {
-    	        LocalDate localFecha = fecha.toInstant().atZone(ZoneId.systemDefault()).toLocalDate();
-    	        RUTA_ARCHIVO = "data/" + localFecha.getDayOfMonth() + "-" + localFecha.getMonthValue() + "-" + localFecha.getYear() + ".txt";
+    		 	String carpetaDestino = crearCarpeta(fecha);   
+    	        RUTA_ARCHIVO = carpetaDestino + "/oferta" + nombreOfertante + ".txt";
     	        
     	        // Serializo el archivo
-        		fos = new FileOutputStream(RUTA_ARCHIVO);
-        		out = new ObjectOutputStream(fos);
-        				
+				fos = new FileOutputStream(RUTA_ARCHIVO);
+				out = new ObjectOutputStream(fos);        			
+
         		Oferta oferta = new Oferta(nombreOfertante, horarioInicio, horarioSalida, montoOfrecido);
         		
         		out.writeObject(oferta);
@@ -48,27 +49,60 @@ public class GestorOferta {
     }
     
     public ArrayList<Oferta> obtenerOfertas(Date fecha) {
-    	LocalDate localFecha = fecha.toInstant().atZone(ZoneId.systemDefault()).toLocalDate();
-		RUTA_ARCHIVO = "data/" + localFecha.getDayOfMonth() + "-" + localFecha.getMonthValue() + "-" + localFecha.getYear() + ".txt";
-		 
-		try {		
+    	String carpetaDestino = obtenerCarpeta(fecha);
+    	File folder = new File(carpetaDestino);
+    	
+        if (folder.isDirectory() && folder.list().length > 0) {
+        	
+        	String[] files = folder.list();
 			ofertas = new ArrayList<Oferta>();
-	    	fis = new FileInputStream(RUTA_ARCHIVO);
-	    	in = new ObjectInputStream(fis);
-	    	
-	    	while (true) {
-	            try {
+    		for (String fileName : files) {
+    			
+		        RUTA_ARCHIVO = carpetaDestino + "/" + fileName;
+		        
+				try {		
+			    	fis = new FileInputStream(RUTA_ARCHIVO);
+			    	in = new ObjectInputStream(fis);
+			    	
 	                Oferta oferta = (Oferta) in.readObject();
 	                ofertas.add(oferta);
-	            } catch (EOFException e) {
-	                break;
-	            }
-	        }
-	    	in.close();
-		} catch (Exception e) {
 
-		}
+			    	in.close();
+				} catch (Exception e) {
+					e.printStackTrace();
+				}
+				
+	    	}
+        }
 		return ofertas;
+    }
+    
+    private String crearCarpeta(Date fecha) {
+    	LocalDate localFecha = fecha.toInstant().atZone(ZoneId.systemDefault()).toLocalDate();
+    	String rutaActual = System.getProperty("user.dir");
+    	String ruta = rutaActual + "/data/" + localFecha.getDayOfMonth() + "-" + localFecha.getMonthValue() + "-" + localFecha.getYear();
+        
+	    File carpeta = new File(ruta);
+	    
+	    if(!(carpeta.exists() && carpeta.isDirectory())) {
+	    	carpeta.mkdirs();
+	    }
+	    
+	    return carpeta.getPath();
+    }
+    
+    private String obtenerCarpeta(Date fecha) {
+    	LocalDate localFecha = fecha.toInstant().atZone(ZoneId.systemDefault()).toLocalDate();
+    	String rutaActual = System.getProperty("user.dir");
+    	String ruta = rutaActual + "/data/" + localFecha.getDayOfMonth() + "-" + localFecha.getMonthValue() + "-" + localFecha.getYear();
+        
+	    File carpeta = new File(ruta);
+	    
+	    if(carpeta.exists() && carpeta.isDirectory()) {
+	    	return carpeta.getPath();
+	    }
+	    return "";
+	    
     }
 }
 

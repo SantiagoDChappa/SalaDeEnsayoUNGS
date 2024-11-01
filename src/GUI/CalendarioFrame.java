@@ -64,7 +64,8 @@ public class CalendarioFrame {
 	private String[] nombreColumnas = {"Nombre del ofertante", "Horario inicio", "Horario salida", "Monto Ofrecido"};
 	private DefaultTableModel model;
 	private GestorOferta GestorOfertas;
-	private Date ultimaFechaBuscada;
+	private ArrayList<Oferta> ofertas;
+	private String ultimaFechaBuscada;
 	private JFrame CalendarioFrame;
 	private JCalendar calendario;
 	private JButton btnVolver;
@@ -79,6 +80,7 @@ public class CalendarioFrame {
 	private void initialize() {
         GestorOfertas = new GestorOferta();
         CalendarioFrame = new JFrame();
+        ofertas = new ArrayList<Oferta>();
 	    CalendarioFrame.setIconImage(Toolkit.getDefaultToolkit().getImage("C:\\Users\\Usuario\\Desktop\\Nueva carpeta\\newCarpet\\Facultad\\Programacion3\\Proyectos\\TP3\\src\\imagenes\\logo_ungs.png"));
 	    CalendarioFrame.setTitle("Buscar ofertas por fechas - Sala de ensayo UNGS");
 	    CalendarioFrame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
@@ -101,16 +103,17 @@ public class CalendarioFrame {
     	btnBuscarOfertas.addActionListener(new ActionListener() {
     		public void actionPerformed(ActionEvent e) {
 				lblMejoresOfertasFecha.setText("Las ofertas del dia: " + mostrarFecha(calendario.getDate()));
-    			
-				if(ultimaFechaBuscada == null || ultimaFechaBuscada != calendario.getDate()) {
-					ultimaFechaBuscada = calendario.getDate();
+				
+				LocalDate localDate = calendario.getDate().toInstant().atZone(ZoneId.systemDefault()).toLocalDate();
+				String fechaAComprobar = localDate.getDayOfMonth() + "-" + localDate.getMonth() + "-" + localDate.getYear();
+				
+				if(ultimaFechaBuscada == null || !ultimaFechaBuscada.equals(fechaAComprobar)) {
+					ultimaFechaBuscada = fechaAComprobar;
 					
-	    			ArrayList<Oferta> ofertas = GestorOfertas.obtenerOfertas(calendario.getDate());	    			
-	    			model = (DefaultTableModel) tblOferta.getModel();
-	    			for(int i = 0; i < model.getRowCount(); i++) {
-	    				model.removeRow(i);	    				
-	    			}
-	    			
+					if(!ofertas.isEmpty()) {ofertas.clear();}
+	    			ofertas = GestorOfertas.obtenerOfertas(calendario.getDate());
+	    			model = new DefaultTableModel(null, nombreColumnas);
+	    				    			
 	    			for (Oferta oferta : ofertas) {
 	    				model.addRow(new Object[] {
     						oferta.obtenerNombreOfertante(), 
@@ -119,7 +122,6 @@ public class CalendarioFrame {
 							formatearMonto(oferta.obtenerMontoOfrecido()) 
     		            });
 	    			}
-	    			
 	    			tblOferta.setModel(model);
 				}
     		}

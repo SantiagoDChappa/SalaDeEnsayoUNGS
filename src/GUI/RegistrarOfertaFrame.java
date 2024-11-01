@@ -270,8 +270,7 @@ public class RegistrarOfertaFrame {
 		cbxHorarioSalida.setSelectedIndex(0);
 		txtMontoOfrecido.setText("0");
 		txtNombreOfertante.setText("");
-		txtFecha.setText("");
-	}
+    }
 	
 	private int convertirHora(String hora) {
 	    // Eliminar los ceros iniciales y la parte de minutos

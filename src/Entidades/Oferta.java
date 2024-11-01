@@ -28,10 +28,10 @@ public class Oferta implements Serializable {
 		this.montoOfrecido = montoOfrecido;	
 	}
 	
-    @Override
+    /*@Override
     public String toString() {
-        return "Oferta { Horario de inicio = '" + horarioInicio + "', horario de salida = " + horarioSalida + ", monto ofrecido = '" + montoOfrecido + "'}";
-    }
+        return "Oferta { Nombre Horario de inicio = '" + horarioInicio + "', horario de salida = " + horarioSalida + ", monto ofrecido = '" + montoOfrecido + "'}";
+    }*/
 	
 	public Integer obtenerHorarioInicio() {
 		return horarioInicio;
