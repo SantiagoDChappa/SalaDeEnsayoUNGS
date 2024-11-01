@@ -1,8 +1,10 @@
 package Logica;
 
+import java.io.BufferedWriter;
 import java.io.EOFException;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
+import java.io.FileWriter;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.time.LocalDate;
@@ -27,32 +29,30 @@ public class GestorOferta {
 
     
     // Creo la oferta
-    public void registrar(Integer horarioInicio, Integer horarioSalida, Double montoOfrecido, Date fecha) {
-    	try {
-    		LocalDate localFecha = fecha.toInstant().atZone(ZoneId.systemDefault()).toLocalDate();
-
-    		RUTA_ARCHIVO = "data/" + localFecha.getDayOfMonth() + "-" + localFecha.getMonthValue() + "-" + localFecha.getYear() + ".txt";
-    		
-    		// Serializo el archivo
-    		fos = new FileOutputStream(RUTA_ARCHIVO);
-    		out = new ObjectOutputStream(fos);
-    				
-    		Oferta oferta = new Oferta(horarioInicio, horarioSalida, montoOfrecido);
-    		
-    		out.writeObject(oferta);
-
-    		out.close();
-    		fos.close();
-    		
-    	} catch (NumberFormatException e) {
-    	} catch (Exception e) {
-    	}
+    public void registrar(String nombreOfertante, Integer horarioInicio, Integer horarioSalida, Double montoOfrecido, Date fecha) {
+    	 try {
+    	        LocalDate localFecha = fecha.toInstant().atZone(ZoneId.systemDefault()).toLocalDate();
+    	        RUTA_ARCHIVO = "data/" + localFecha.getDayOfMonth() + "-" + localFecha.getMonthValue() + "-" + localFecha.getYear() + ".txt";
+    	        
+    	        // Serializo el archivo
+        		fos = new FileOutputStream(RUTA_ARCHIVO);
+        		out = new ObjectOutputStream(fos);
+        				
+        		Oferta oferta = new Oferta(nombreOfertante, horarioInicio, horarioSalida, montoOfrecido);
+        		
+        		out.writeObject(oferta);
+        		out.close();
+    	    } catch (Exception e) {
+    	        e.printStackTrace(); // Manejar errores
+    	    }
     }
     
     public ArrayList<Oferta> obtenerOfertas(Date fecha) {
     	LocalDate localFecha = fecha.toInstant().atZone(ZoneId.systemDefault()).toLocalDate();
 		RUTA_ARCHIVO = "data/" + localFecha.getDayOfMonth() + "-" + localFecha.getMonthValue() + "-" + localFecha.getYear() + ".txt";
-		try {
+		 
+		try {		
+			ofertas = new ArrayList<Oferta>();
 	    	fis = new FileInputStream(RUTA_ARCHIVO);
 	    	in = new ObjectInputStream(fis);
 	    	
@@ -61,11 +61,12 @@ public class GestorOferta {
 	                Oferta oferta = (Oferta) in.readObject();
 	                ofertas.add(oferta);
 	            } catch (EOFException e) {
-	                break; // End of file reached
+	                break;
 	            }
 	        }
+	    	in.close();
 		} catch (Exception e) {
-			// TODO: handle exception
+
 		}
 		return ofertas;
     }

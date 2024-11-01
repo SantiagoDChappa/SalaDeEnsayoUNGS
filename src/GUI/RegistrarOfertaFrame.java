@@ -210,7 +210,11 @@ public class RegistrarOfertaFrame {
         btnEnviarOferta.addActionListener(new ActionListener() {
         	public void actionPerformed(ActionEvent e) {
         		try {
-        			GestorOfertas.registrar(Integer.parseInt(txtHorarioInicio.getText()), Integer.parseInt(txtHorarioSalida.getText()), Double.parseDouble(txtMontoOfrecido.getText()), calendario.getDate());					
+        			Integer valorHorarioInicio = convertirHora(cbxHorarioInicio.getSelectedItem().toString());
+        			Integer valorHorarioSalida = convertirHora(cbxHorarioSalida.getSelectedItem().toString());
+        			Double valorMontoOfrecido = Double.parseDouble(txtMontoOfrecido.getText());
+        			
+        			GestorOfertas.registrar(txtNombreOfertante.getText(), valorHorarioInicio, valorHorarioSalida, valorMontoOfrecido, calendario.getDate());					
 				} catch (NumberFormatException exception) {
 					JOptionPane.showMessageDialog(null, "¡Error al registrar oferta! " + exception.getMessage());
 				}
@@ -262,11 +266,17 @@ public class RegistrarOfertaFrame {
 	}
 	
 	private void reiniciarValores() {
-		txtHorarioInicio.setText("0");
-		txtHorarioSalida.setText("0");
+		cbxHorarioInicio.setSelectedIndex(0);
+		cbxHorarioSalida.setSelectedIndex(0);
 		txtMontoOfrecido.setText("0");
 		txtNombreOfertante.setText("");
 		txtFecha.setText("");
+	}
+	
+	private int convertirHora(String hora) {
+	    // Eliminar los ceros iniciales y la parte de minutos
+	    String horaSolo = hora.split(":")[0]; // Obtiene la parte antes de los dos puntos
+	    return Integer.parseInt(horaSolo);    // Convierte a entero
 	}
 	
 	public void setVisible(boolean b) {
