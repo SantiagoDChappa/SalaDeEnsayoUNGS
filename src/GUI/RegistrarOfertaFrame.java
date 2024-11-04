@@ -7,6 +7,7 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
+import java.text.DecimalFormat;
 import java.text.NumberFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -104,39 +105,62 @@ public class RegistrarOfertaFrame {
         });
         panel.add(txtFecha);
         
-      /*  txtMontoOfrecido.getDocument().addDocumentListener(new DocumentListener() {
-            private void formatCurrency() {
-                SwingUtilities.invokeLater(() -> {
-                    String text = txtMontoOfrecido.getText();
-                    if (!text.isEmpty()) {
-                        try {
-                            // Quita cualquier formato existente para obtener el número real
-                            Number number = currencyFormat.parse(text.replaceAll("[^\\d]", ""));
-                            // Actualiza el texto con el formato de moneda
-                            txtMontoOfrecido.setText(currencyFormat.format(number));
-                        } catch (ParseException e) {
-                            e.printStackTrace();
-                        }
-                    }
-                });
+        txtMontoOfrecido.getDocument().addDocumentListener(new DocumentListener() {
+        	 private boolean isUpdating = false; // Para evitar recursividad infinita
+
+    	    private void formatText() {
+    	        if (isUpdating) return; // Evita múltiples llamadas recursivas
+    	        isUpdating = true;
+
+    	        SwingUtilities.invokeLater(() -> {
+    	            String originalText = txtMontoOfrecido.getText().replaceAll("\\.", ""); // Elimina puntos existentes
+    	            if (!originalText.isEmpty()) {
+    	                try {
+    	                    // Convierte el texto a un número
+    	                    long number = Long.parseLong(originalText);
+    	                    // Formatea el número con puntos como separadores de miles
+    	                    NumberFormat numberFormat = new DecimalFormat("#,###");
+    	                    String formattedText = numberFormat.format(number).replace(",", ".");
+
+    	                    // Guarda la posición original del cursor
+    	                    int originalCaretPosition = txtMontoOfrecido.getCaretPosition();
+    	                    int newCaretPosition = formattedText.length();
+
+    	                    // Actualiza el texto solo si es necesario
+    	                    if (!formattedText.equals(txtMontoOfrecido.getText())) {
+    	                        txtMontoOfrecido.setText(formattedText);
+
+    	                        // Si el cursor estaba al final antes de formatear, mantenlo al final
+    	                        if (originalCaretPosition == originalText.length()) {
+    	                            txtMontoOfrecido.setCaretPosition(newCaretPosition);
+    	                        } else {
+    	                            // Ajusta la posición para que esté al final del texto actualizado
+    	                            txtMontoOfrecido.setCaretPosition(newCaretPosition);
+    	                        }
+    	                    }
+    	                } catch (NumberFormatException e) {
+    	                    // Maneja la excepción si el texto no es un número válido
+    	                }
+    	            }
+    	            isUpdating = false; // Restablece la bandera
+    	        });
             }
 
             @Override
             public void insertUpdate(DocumentEvent e) {
-                formatCurrency();
+                formatText();
             }
 
             @Override
             public void removeUpdate(DocumentEvent e) {
-                formatCurrency();
+                formatText();
             }
 
             @Override
             public void changedUpdate(DocumentEvent e) {
-                formatCurrency();
+                formatText();
             }
-            
-        });*/
+        });
         panel.add(txtMontoOfrecido);
 
     	// ---------------------------- LABELS -------------------------------------
@@ -212,7 +236,7 @@ public class RegistrarOfertaFrame {
         		try {
         			Integer valorHorarioInicio = convertirHora(cbxHorarioInicio.getSelectedItem().toString());
         			Integer valorHorarioSalida = convertirHora(cbxHorarioSalida.getSelectedItem().toString());
-        			Double valorMontoOfrecido = Double.parseDouble(txtMontoOfrecido.getText());
+        			Double valorMontoOfrecido = Double.parseDouble(txtMontoOfrecido.getText().replace(".", ""));
         			
         			GestorOfertas.registrar(txtNombreOfertante.getText(), valorHorarioInicio, valorHorarioSalida, valorMontoOfrecido, calendario.getDate());					
 				} catch (NumberFormatException exception) {
