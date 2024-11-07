@@ -70,15 +70,6 @@ public class MenuFrame {
 		
 		MenuFrame.getContentPane().add(botonRegistrarOferta);
 		
-		JButton botonVerOfertas = new JButton("Ver oferta");
-		botonVerOfertas.setFont(new Font("Microsoft YaHei UI", Font.PLAIN, 20));
-		botonVerOfertas.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent e) {
-			}
-		});
-		botonVerOfertas.setBounds(480, 276, 321, 81);
-		MenuFrame.getContentPane().add(botonVerOfertas);
-		
 		JButton botonCalendario = new JButton("Ver calendario");
 		botonCalendario.setFont(new Font("Microsoft YaHei UI", Font.PLAIN, 20));
 		botonCalendario.addActionListener(new ActionListener() {
@@ -88,16 +79,19 @@ public class MenuFrame {
 				MenuFrame.setVisible(false);
 			}
 		});
-		botonCalendario.setBounds(480, 391, 321, 81);
+		botonCalendario.setBounds(480, 276, 321, 81);
 		MenuFrame.getContentPane().add(botonCalendario);
 		
 		JButton botonVerMejoresOfertas = new JButton("Ver las mejores ofertas");
 		botonVerMejoresOfertas.setFont(new Font("Microsoft YaHei UI", Font.PLAIN, 20));
 		botonVerMejoresOfertas.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
+				MejoresOferasFrame mejoresOfertasFrame = new MejoresOferasFrame();
+				mejoresOfertasFrame.setVisible(true);
+    			MenuFrame.setVisible(false);
 			}
 		});
-		botonVerMejoresOfertas.setBounds(480, 509, 321, 81);
+		botonVerMejoresOfertas.setBounds(480, 391, 321, 81);
 		MenuFrame.getContentPane().add(botonVerMejoresOfertas);
 		
 		MenuFrame.getContentPane().setBackground(new Color(14, 16, 18));

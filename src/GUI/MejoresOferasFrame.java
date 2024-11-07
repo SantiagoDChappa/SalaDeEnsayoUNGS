@@ -59,78 +59,48 @@ import Entidades.Oferta;
 import Logica.CalendarioLogica;
 import Logica.GestorOferta;
 
-public class CalendarioFrame {
+public class MejoresOferasFrame {
 	
 	private String[] nombreColumnas = {"Nombre del ofertante", "Horario inicio", "Horario salida", "Monto Ofrecido", "Equipamientos"};
-	private DefaultTableModel model;
-	private GestorOferta GestorOfertas;
-	private ArrayList<Oferta> ofertas;
-	private String ultimaFechaBuscada;
-	private JFrame CalendarioFrame;
+	private JFrame MejoresOfertasFrame;
 	private JCalendar calendario;
 	private JButton btnVolver;
 	private JTable tblOferta;
 	private JScrollPane spTablero;
 
     
-	public CalendarioFrame() {
+	public MejoresOferasFrame() {
     	initialize();
     }
     
 	private void initialize() {
-        GestorOfertas = new GestorOferta();
-        CalendarioFrame = new JFrame();
-        ofertas = new ArrayList<Oferta>();
-	    CalendarioFrame.setIconImage(Toolkit.getDefaultToolkit().getImage("C:\\Users\\Usuario\\Desktop\\Nueva carpeta\\newCarpet\\Facultad\\Programacion3\\Proyectos\\TP3\\src\\imagenes\\logo_ungs.png"));
-	    CalendarioFrame.setTitle("Buscar ofertas por fechas - Sala de ensayo UNGS");
-	    CalendarioFrame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-	    CalendarioFrame.setBounds(100, 100, 592, 401);
-	    CalendarioFrame.setSize(1280, 720);
-    	CalendarioFrame.setLocationRelativeTo(null);
-    	CalendarioFrame.getContentPane().setLayout(null);
+		MejoresOfertasFrame = new JFrame();
+	    MejoresOfertasFrame.setIconImage(Toolkit.getDefaultToolkit().getImage("C:\\Users\\Usuario\\Desktop\\Nueva carpeta\\newCarpet\\Facultad\\Programacion3\\Proyectos\\TP3\\src\\imagenes\\logo_ungs.png"));
+	    MejoresOfertasFrame.setTitle("Buscar ofertas por fechas - Sala de ensayo UNGS");
+	    MejoresOfertasFrame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+	    MejoresOfertasFrame.setBounds(100, 100, 592, 401);
+	    MejoresOfertasFrame.setSize(1280, 720);
+    	MejoresOfertasFrame.setLocationRelativeTo(null);
+    	MejoresOfertasFrame.getContentPane().setLayout(null);
     	
     	// Le pongo un background de color #0E1012
-    	CalendarioFrame.getContentPane().setBackground(new Color(14, 16, 18));
+    	MejoresOfertasFrame.getContentPane().setBackground(new Color(14, 16, 18));
     	
-    	JLabel lblMejoresOfertasFecha = new JLabel("Las ofertas del dia: ");
+    	JLabel lblMejoresOfertasFecha = new JLabel("Las mejores ofertas del dia: ");
     	lblMejoresOfertasFecha.setForeground(new Color(255, 255, 255));
     	lblMejoresOfertasFecha.setFont(new Font("Microsoft YaHei UI", Font.PLAIN, 20));
     	lblMejoresOfertasFecha.setBounds(42, 59, 620, 27);
-    	CalendarioFrame.getContentPane().add(lblMejoresOfertasFecha);
+    	MejoresOfertasFrame.getContentPane().add(lblMejoresOfertasFecha);
     	
-    	JButton btnBuscarOfertas = new JButton("Buscar Ofertas");
+    	JButton btnBuscarOfertas = new JButton("Maximizar Ganancia");
     	btnBuscarOfertas.setFont(new Font("Microsoft YaHei UI", Font.PLAIN, 11));
     	btnBuscarOfertas.addActionListener(new ActionListener() {
     		public void actionPerformed(ActionEvent e) {
-				lblMejoresOfertasFecha.setText("Las ofertas del dia: " + mostrarFecha(calendario.getDate()));
 				
-				LocalDate localDate = calendario.getDate().toInstant().atZone(ZoneId.systemDefault()).toLocalDate();
-				String fechaAComprobar = localDate.getDayOfMonth() + "-" + localDate.getMonth() + "-" + localDate.getYear();
-				
-				if(ultimaFechaBuscada == null || !ultimaFechaBuscada.equals(fechaAComprobar)) {
-					ultimaFechaBuscada = fechaAComprobar;
-					
-					if(!ofertas.isEmpty()) {ofertas.clear();}
-	    			ofertas = GestorOfertas.obtenerOfertas(calendario.getDate());
-	    			model = new DefaultTableModel(null, nombreColumnas);
-	    				    	
-	    			if(ofertas.size() > 0) {
-	    				for (Oferta oferta : ofertas) {
-	    					model.addRow(new Object[] {
-	    							oferta.obtenerNombreOfertante(), 
-	    							formatearHora(oferta.obtenerHorarioInicio()),
-	    							formatearHora(oferta.obtenerHorarioSalida()), 
-	    							formatearMonto(oferta.obtenerMontoOfrecido()), 
-	    							formatearEquipamientos(oferta.obtenerEquipamientos())
-	    					});
-	    				}
-	    			}
-	    			tblOferta.setModel(model);
-				}
     		}
     	});
-    	btnBuscarOfertas.setBounds(443, 610, 347, 38);
-    	CalendarioFrame.getContentPane().add(btnBuscarOfertas);
+    	btnBuscarOfertas.setBounds(528, 610, 183, 38);
+    	MejoresOfertasFrame.getContentPane().add(btnBuscarOfertas);
     	
     	btnVolver = new JButton("Volver");
     	btnVolver.setFont(new Font("Microsoft YaHei UI", Font.PLAIN, 11));
@@ -138,23 +108,40 @@ public class CalendarioFrame {
     		public void actionPerformed(ActionEvent e) {
     			MenuFrame menuFrame = new MenuFrame();
     			menuFrame.setVisible(true);
-    			CalendarioFrame.setVisible(false);
+    			MejoresOfertasFrame.setVisible(false);
     		}
     	});
     	btnVolver.setBounds(28, 11, 113, 38);
-    	CalendarioFrame.getContentPane().add(btnVolver);
+    	MejoresOfertasFrame.getContentPane().add(btnVolver);
     	
-    	calendario = new JCalendar();
-    	calendario.setBounds(635, 97, 574, 486);
-    	calendario.setVisible(true);
-    	CalendarioFrame.getContentPane().add(calendario);
-    	    	
+    	JPanel panel_1 = new JPanel();
+    	panel_1.setBackground(Color.GRAY);
+    	panel_1.setBounds(28, 96, 1212, 503);
+    	MejoresOfertasFrame.getContentPane().add(panel_1);
+    	panel_1.setLayout(null);
+    	
     	tblOferta = new JTable();
     	tblOferta.setModel(new DefaultTableModel(null, nombreColumnas));
     	spTablero = new JScrollPane(tblOferta);
-    	spTablero.setBounds(28, 97, 574, 486);
-    	CalendarioFrame.getContentPane().add(spTablero);
+    	spTablero.setBounds(611, 47, 591, 325);
+    	panel_1.add(spTablero);
     	
+    	calendario = new JCalendar();
+    	calendario.setBounds(23, 47, 546, 256);
+    	panel_1.add(calendario);
+    	
+    	JLabel lblNewLabel = new JLabel("RESULTADO");
+    	lblNewLabel.setForeground(Color.BLACK);
+    	lblNewLabel.setFont(new Font("Microsoft YaHei UI", Font.BOLD, 23));
+    	lblNewLabel.setBounds(848, 11, 202, 25);
+    	panel_1.add(lblNewLabel);
+    	
+    	JLabel lblMaximaGanancia = new JLabel("Ganancia total:");
+    	lblMaximaGanancia.setForeground(Color.BLACK);
+    	lblMaximaGanancia.setFont(new Font("Microsoft YaHei UI", Font.BOLD, 23));
+    	lblMaximaGanancia.setBounds(611, 405, 318, 39);
+    	panel_1.add(lblMaximaGanancia);
+    	calendario.setVisible(true);
     	
     }
 	
@@ -188,6 +175,6 @@ public class CalendarioFrame {
 	}
 	
 	public void setVisible(boolean b) {
-		CalendarioFrame.setVisible(b);
+		MejoresOfertasFrame.setVisible(b);
 	}
 }
