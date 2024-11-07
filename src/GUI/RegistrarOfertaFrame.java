@@ -13,11 +13,13 @@ import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.time.LocalDate;
 import java.time.ZoneId;
+import java.util.ArrayList;
 import java.util.Date;
 
 //Add this line at the beginning of your file
 
 import javax.swing.JButton;
+import javax.swing.JCheckBox;
 import javax.swing.JComboBox;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
@@ -30,6 +32,8 @@ import javax.swing.UIManager;
 import javax.swing.event.DocumentEvent;
 import javax.swing.event.DocumentListener;
 
+import org.w3c.dom.events.EventException;
+
 import com.toedter.calendar.JCalendar;
 import com.toedter.calendar.JDateChooser;
 
@@ -41,12 +45,13 @@ public class RegistrarOfertaFrame {
 	private GestorOferta GestorOfertas;
 	private JButton btnEnviarOferta, btnBorrar, btnVolver;
     private JPanel panel;
-    private JLabel lblTitulo, lblHorarioDeInicio, lblHorarioDeSalida, lblPrecio, lblNombreDelOfertante, lblFecha;
-    private JTextField txtHorarioInicio, txtHorarioSalida, txtMontoOfrecido, txtFecha, txtNombreOfertante;
+    private JLabel lblTitulo, lblHorarioDeInicio, lblHorarioDeSalida, lblPrecio, lblNombreDelOfertante, lblFecha, lblEquipamientoAUtilizar, lblHs, lblHs_1;
+    private JTextField txtMontoOfrecido, txtFecha, txtNombreOfertante;
     private JCalendar calendario;
     private JComboBox cbxHorarioInicio, cbxHorarioSalida;
+    private JCheckBox chbxCoros, chbxVientos, chbxBajo, chbxTeclado, chbxGuitarra, chbxBateria;
     private LocalDate localDate;
-    private NumberFormat currencyFormat;
+    private ArrayList<String> equipamientos;
 
 	
 	public RegistrarOfertaFrame() {
@@ -69,23 +74,23 @@ public class RegistrarOfertaFrame {
     	
         panel = new JPanel();
     	panel.setBackground(new Color(44, 62, 80));
-       	panel.setBounds(26, 107, 1204, 538);
+       	panel.setBounds(50, 92, 1204, 538);
     	panel.setLayout(null);
     	RegistrarOfertaFrame.getContentPane().add(panel);
 
         txtMontoOfrecido = new JTextField();
         txtMontoOfrecido.setFont(new Font("Microsoft YaHei UI", Font.PLAIN, 15));
         txtMontoOfrecido.setColumns(10);
-        txtMontoOfrecido.setBounds(177, 164, 169, 32);
+        txtMontoOfrecido.setBounds(176, 119, 169, 32);
         
         txtNombreOfertante = new JTextField();
         txtNombreOfertante.setFont(new Font("Microsoft YaHei UI", Font.PLAIN, 15));
         txtNombreOfertante.setColumns(10);
-        txtNombreOfertante.setBounds(328, 109, 169, 34);
+        txtNombreOfertante.setBounds(327, 74, 169, 34);
         panel.add(txtNombreOfertante);
         
         txtFecha = new JTextField();
-        txtFecha.setBounds(660, 390, 216, 34);
+        txtFecha.setBounds(689, 355, 216, 34);
         txtFecha.setColumns(10);
         localDate = LocalDate.now();
         txtFecha.setText(localDate.getDayOfMonth() + "/" + localDate.getMonthValue() + "/" + localDate.getYear());
@@ -108,7 +113,7 @@ public class RegistrarOfertaFrame {
         txtMontoOfrecido.getDocument().addDocumentListener(new DocumentListener() {
         	 private boolean isUpdating = false; // Para evitar recursividad infinita
 
-    	    private void formatText() {
+        	 private void formatText() {
     	        if (isUpdating) return; // Evita múltiples llamadas recursivas
     	        isUpdating = true;
 
@@ -165,7 +170,7 @@ public class RegistrarOfertaFrame {
 
     	// ---------------------------- LABELS -------------------------------------
     	lblHorarioDeInicio = new JLabel("Horario de inicio");
-    	lblHorarioDeInicio.setBounds(102, 225, 180, 34);
+    	lblHorarioDeInicio.setBounds(101, 174, 180, 34);
     	panel.add(lblHorarioDeInicio);
     	lblHorarioDeInicio.setForeground(Color.WHITE);
     	lblHorarioDeInicio.setFont(new Font("Microsoft YaHei UI", Font.PLAIN, 20));
@@ -173,25 +178,25 @@ public class RegistrarOfertaFrame {
     	lblHorarioDeSalida = new JLabel("Horario de salida");
     	lblHorarioDeSalida.setForeground(Color.WHITE);
     	lblHorarioDeSalida.setFont(new Font("Microsoft YaHei UI", Font.PLAIN, 20));
-    	lblHorarioDeSalida.setBounds(102, 291, 180, 34);
+    	lblHorarioDeSalida.setBounds(101, 240, 180, 34);
     	panel.add(lblHorarioDeSalida);
     	
     	lblPrecio = new JLabel("Precio");
     	lblPrecio.setForeground(Color.WHITE);
     	lblPrecio.setFont(new Font("Microsoft YaHei UI", Font.PLAIN, 20));
-    	lblPrecio.setBounds(102, 164, 180, 32);
+    	lblPrecio.setBounds(101, 119, 180, 32);
     	panel.add(lblPrecio);
     	
         lblNombreDelOfertante = new JLabel("Nombre del ofertante");
         lblNombreDelOfertante.setForeground(Color.WHITE);
         lblNombreDelOfertante.setFont(new Font("Microsoft YaHei UI", Font.PLAIN, 20));
-        lblNombreDelOfertante.setBounds(102, 109, 216, 34);
+        lblNombreDelOfertante.setBounds(101, 74, 216, 34);
         panel.add(lblNombreDelOfertante);
         
         lblFecha = new JLabel("Fecha");
         lblFecha.setForeground(Color.WHITE);
         lblFecha.setFont(new Font("Microsoft YaHei UI", Font.PLAIN, 20));
-        lblFecha.setBounds(571, 390, 90, 34);
+        lblFecha.setBounds(600, 355, 90, 34);
         panel.add(lblFecha);
     	
     	lblTitulo = new JLabel("Registrar oferta");
@@ -204,7 +209,7 @@ public class RegistrarOfertaFrame {
 
     	// -------------------------- CALENDARIO ---------------------------------
         calendario = new JCalendar();
-        calendario.setBounds(571, 109, 547, 270);
+        calendario.setBounds(600, 74, 547, 270);
         calendario.setVisible(true);
         calendario.getDayChooser().addPropertyChangeListener("day", new PropertyChangeListener() {
             @Override
@@ -233,17 +238,19 @@ public class RegistrarOfertaFrame {
         btnEnviarOferta.setFont(new Font("Microsoft YaHei UI", Font.PLAIN, 14));
         btnEnviarOferta.addActionListener(new ActionListener() {
         	public void actionPerformed(ActionEvent e) {
-        		try {
-        			Integer valorHorarioInicio = convertirHora(cbxHorarioInicio.getSelectedItem().toString());
-        			Integer valorHorarioSalida = convertirHora(cbxHorarioSalida.getSelectedItem().toString());
-        			Double valorMontoOfrecido = Double.parseDouble(txtMontoOfrecido.getText().replace(".", ""));
+        		try {        		
+        			agregarEquipamientos();
+
+        			GestorOfertas.registrar(txtNombreOfertante.getText(), cbxHorarioInicio.getSelectedItem().toString(), cbxHorarioSalida.getSelectedItem().toString(), txtMontoOfrecido.getText(), calendario.getDate(), equipamientos);
         			
-        			GestorOfertas.registrar(txtNombreOfertante.getText(), valorHorarioInicio, valorHorarioSalida, valorMontoOfrecido, calendario.getDate());					
-				} catch (NumberFormatException exception) {
-					JOptionPane.showMessageDialog(null, "¡Error al registrar oferta! " + exception.getMessage());
-				}
-        		JOptionPane.showMessageDialog(null, "Se registro la oferta correctamente!");
-        		reiniciarValores();
+        			JOptionPane.showMessageDialog(null, "Se registro la oferta correctamente!");
+        			reiniciarValores();
+        			
+        		} catch (NumberFormatException exception) {
+        			JOptionPane.showMessageDialog(null, "¡Error al registrar oferta! " + exception.getMessage());
+        		}catch (Exception exception) {
+     				JOptionPane.showMessageDialog(null, "¡Error al registrar oferta! " + exception.getMessage());
+        		}
         	}
         });
         btnEnviarOferta.setBounds(600, 481, 137, 34);
@@ -267,25 +274,55 @@ public class RegistrarOfertaFrame {
 
         cbxHorarioInicio = new JComboBox<>(horarios);
         cbxHorarioInicio.setFont(new Font("Microsoft YaHei UI", Font.PLAIN, 15));
-        cbxHorarioInicio.setBounds(281, 225, 77, 32);
+        cbxHorarioInicio.setBounds(280, 174, 77, 32);
         panel.add(cbxHorarioInicio);
         
         cbxHorarioSalida = new JComboBox<>(horarios);
         cbxHorarioSalida.setFont(new Font("Microsoft YaHei UI", Font.PLAIN, 15));
-        cbxHorarioSalida.setBounds(281, 291, 77, 32);
+        cbxHorarioSalida.setBounds(280, 240, 77, 32);
         panel.add(cbxHorarioSalida);
         
-        JLabel lblHs = new JLabel("hs");
+        lblHs = new JLabel("hs");
         lblHs.setForeground(Color.WHITE);
         lblHs.setFont(new Font("Microsoft YaHei UI", Font.PLAIN, 20));
-        lblHs.setBounds(367, 225, 56, 34);
+        lblHs.setBounds(366, 174, 56, 34);
         panel.add(lblHs);
         
-        JLabel lblHs_1 = new JLabel("hs");
+        lblHs_1 = new JLabel("hs");
         lblHs_1.setForeground(Color.WHITE);
         lblHs_1.setFont(new Font("Microsoft YaHei UI", Font.PLAIN, 20));
-        lblHs_1.setBounds(368, 291, 56, 34);
+        lblHs_1.setBounds(367, 240, 56, 34);
         panel.add(lblHs_1);
+        
+        lblEquipamientoAUtilizar = new JLabel("Equipamiento a utilizar");
+        lblEquipamientoAUtilizar.setForeground(Color.WHITE);
+        lblEquipamientoAUtilizar.setFont(new Font("Microsoft YaHei UI", Font.PLAIN, 20));
+        lblEquipamientoAUtilizar.setBounds(101, 300, 228, 32);
+        panel.add(lblEquipamientoAUtilizar);
+        
+        chbxGuitarra = new JCheckBox("Guitarra");
+        chbxGuitarra.setBounds(111, 339, 97, 23);
+        panel.add(chbxGuitarra);
+        
+        chbxBateria = new JCheckBox("Bateria");
+        chbxBateria.setBounds(220, 339, 97, 23);
+        panel.add(chbxBateria);
+        
+        chbxTeclado = new JCheckBox("Teclado");
+        chbxTeclado.setBounds(111, 365, 97, 23);
+        panel.add(chbxTeclado);
+        
+        chbxBajo = new JCheckBox("Bajo");
+        chbxBajo.setBounds(220, 365, 97, 23);
+        panel.add(chbxBajo);
+        
+        chbxVientos = new JCheckBox("Vientos");
+        chbxVientos.setBounds(111, 391, 97, 23);
+        panel.add(chbxVientos);
+        
+        chbxCoros = new JCheckBox("Coros");
+        chbxCoros.setBounds(220, 391, 97, 23);
+        panel.add(chbxCoros);
         
 	}
 	
@@ -295,12 +332,29 @@ public class RegistrarOfertaFrame {
 		txtMontoOfrecido.setText("0");
 		txtNombreOfertante.setText("");
     }
-	
-	private int convertirHora(String hora) {
-	    // Eliminar los ceros iniciales y la parte de minutos
-	    String horaSolo = hora.split(":")[0]; // Obtiene la parte antes de los dos puntos
-	    return Integer.parseInt(horaSolo);    // Convierte a entero
-	}
+		
+	private void agregarEquipamientos() {
+		equipamientos = new ArrayList<>();
+		
+		if(chbxGuitarra.isSelected()) {
+			equipamientos.add("Guitarra");
+		}
+		if(chbxBateria.isSelected()) {
+			equipamientos.add("Bateria");
+		}
+		if(chbxTeclado.isSelected()) {
+			equipamientos.add("Teclado");
+		}
+		if(chbxBajo.isSelected()) {
+			equipamientos.add("Bajo");
+		}
+		if(chbxVientos.isSelected()) {
+			equipamientos.add("Vientos");
+		}
+		if(chbxCoros.isSelected()) {
+			equipamientos.add("Coros");
+		}
+    }
 	
 	public void setVisible(boolean b) {
 		RegistrarOfertaFrame.setVisible(b);

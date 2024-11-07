@@ -61,7 +61,7 @@ import Logica.GestorOferta;
 
 public class CalendarioFrame {
 	
-	private String[] nombreColumnas = {"Nombre del ofertante", "Horario inicio", "Horario salida", "Monto Ofrecido"};
+	private String[] nombreColumnas = {"Nombre del ofertante", "Horario inicio", "Horario salida", "Monto Ofrecido", "Equipamientos"};
 	private DefaultTableModel model;
 	private GestorOferta GestorOfertas;
 	private ArrayList<Oferta> ofertas;
@@ -113,14 +113,17 @@ public class CalendarioFrame {
 					if(!ofertas.isEmpty()) {ofertas.clear();}
 	    			ofertas = GestorOfertas.obtenerOfertas(calendario.getDate());
 	    			model = new DefaultTableModel(null, nombreColumnas);
-	    				    			
-	    			for (Oferta oferta : ofertas) {
-	    				model.addRow(new Object[] {
-    						oferta.obtenerNombreOfertante(), 
-							formatearHora(oferta.obtenerHorarioInicio()),
-							formatearHora(oferta.obtenerHorarioSalida()), 
-							formatearMonto(oferta.obtenerMontoOfrecido()) 
-    		            });
+	    				    	
+	    			if(ofertas.size() > 0) {
+	    				for (Oferta oferta : ofertas) {
+	    					model.addRow(new Object[] {
+	    							oferta.obtenerNombreOfertante(), 
+	    							formatearHora(oferta.obtenerHorarioInicio()),
+	    							formatearHora(oferta.obtenerHorarioSalida()), 
+	    							formatearMonto(oferta.obtenerMontoOfrecido()), 
+	    							formatearEquipamientos(oferta.obtenerEquipamientos())
+	    					});
+	    				}
 	    			}
 	    			tblOferta.setModel(model);
 				}
@@ -163,6 +166,18 @@ public class CalendarioFrame {
 	    NumberFormat formatoMoneda = NumberFormat.getCurrencyInstance(Locale.forLanguageTag("es-AR"));
 
         return formatoMoneda.format(monto);
+	}
+	
+	private String formatearEquipamientos(ArrayList<String> equipamientos) {
+	    String equipamientosStr = "";
+	    if(!equipamientos.isEmpty()) {
+			for (String equipamiento : equipamientos) {
+				equipamientosStr += equipamiento + ", ";
+			}
+		
+			return equipamientosStr.substring(0, equipamientosStr.length() - 1);
+	    }
+	    return "";
 	}
 	
 	private String mostrarFecha(Date fecha) {
