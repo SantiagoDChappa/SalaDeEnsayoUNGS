@@ -14,6 +14,8 @@ import java.time.ZoneId;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import java.util.Collections;
+import java.util.Comparator;
 
 import Entidades.Oferta;
 
@@ -64,6 +66,13 @@ public class GestorOferta implements Serializable{
 				Oferta oferta = leerArchivo(RUTA_ARCHIVO);
                 ofertas.add(oferta);
 	    	}
+    		// Ordenar las ofertas por horarioSalida de forma creciente
+            Collections.sort(ofertas, new Comparator<Oferta>() {
+                @Override
+                public int compare(Oferta o1, Oferta o2) {
+                    return Integer.compare(o1.obtenerHorarioSalida(), o2.obtenerHorarioSalida());
+                }
+            });
         }
 		return ofertas;
     }
@@ -83,7 +92,7 @@ public class GestorOferta implements Serializable{
     		out.writeObject(oferta);
     		out.close();			
 		} catch (Exception e) {
-            e.printStackTrace(); // Puedes manejar los errores con más detalle si es necesario
+            e.printStackTrace(); 
 		}
     }
     
@@ -94,7 +103,7 @@ public class GestorOferta implements Serializable{
             
             return (Oferta) in.readObject();
         } catch (EOFException e) {
-            // Archivo vacío, manejar si es necesario
+            
         } catch (Exception e) {
             e.printStackTrace(); 
         }
@@ -143,6 +152,53 @@ public class GestorOferta implements Serializable{
 		}
 		return adjudicadas;
 	}
+    public List<Oferta> seleccionarOfertasMaxGananciaDP(List<Oferta> ofertas) {
+        int n = ofertas.size();
+
+        double[] dp = new double[n];
+        List<List<Oferta>> seleccionadas = new ArrayList<>();
+
+        for (int i = 0; i < n; i++) {
+            seleccionadas.add(new ArrayList<>());
+        }
+
+        // Inicializar el primer caso
+        dp[0] = ofertas.get(0).obtenerMontoOfrecido();
+        seleccionadas.get(0).add(ofertas.get(0));
+
+        for (int i = 1; i < n; i++) {
+            double gananciaConEsta = ofertas.get(i).obtenerMontoOfrecido();
+            int ultimoCompatible = -1;
+
+            // Buscar la última oferta compatible
+            for (int j = i - 1; j >= 0; j--) {
+                if (ofertas.get(j).obtenerHorarioSalida() <= ofertas.get(i).obtenerHorarioInicio()) {
+                    ultimoCompatible = j;
+                    break;
+                }
+            }
+
+            // Si hay una oferta compatible, sumar su ganancia
+            if (ultimoCompatible != -1) {
+                gananciaConEsta += dp[ultimoCompatible];
+            }
+
+            // Comparar ganancia con esta oferta vs sin ella
+            if (gananciaConEsta > dp[i - 1]) {
+                dp[i] = gananciaConEsta;
+                if (ultimoCompatible != -1) {
+                    seleccionadas.get(i).addAll(seleccionadas.get(ultimoCompatible));
+                }
+                seleccionadas.get(i).add(ofertas.get(i));
+            } else {
+                dp[i] = dp[i - 1];
+                seleccionadas.get(i).addAll(seleccionadas.get(i - 1));
+            }
+        }
+
+        // La última lista de seleccionadas contiene la solución óptima
+        return seleccionadas.get(n - 1);
+    }
     
 	public int calcularDuracionEnHoras(Oferta o) {
 		return o.obtenerHorarioInicio() - o.obtenerHorarioSalida();
@@ -162,4 +218,3 @@ public class GestorOferta implements Serializable{
 	}
 	
 }
-

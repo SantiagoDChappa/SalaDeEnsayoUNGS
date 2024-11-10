@@ -27,6 +27,7 @@ import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.Hashtable;
+import java.util.List;
 import java.util.Locale;
 
 import javax.imageio.ImageIO;
@@ -62,87 +63,142 @@ import Logica.GestorOferta;
 public class MejoresOferasFrame {
 	
 	private String[] nombreColumnas = {"Nombre del ofertante", "Horario inicio", "Horario salida", "Monto Ofrecido", "Equipamientos"};
-	private JFrame MejoresOfertasFrame;
-	private JCalendar calendario;
-	private JButton btnVolver;
-	private JTable tblOferta;
-	private JScrollPane spTablero;
-
+    private JFrame MejoresOfertasFrame;
+    private JCalendar calendario;
+    private JButton btnVolver;
+    private JTable tblOferta;
+    private JScrollPane spTablero;
+    private GestorOferta gestorOferta; // Instancia de GestorOferta
     
-	public MejoresOferasFrame() {
-    	initialize();
+    public MejoresOferasFrame() {
+        initialize();
     }
     
-	private void initialize() {
-		MejoresOfertasFrame = new JFrame();
-	    MejoresOfertasFrame.setIconImage(Toolkit.getDefaultToolkit().getImage("C:\\Users\\Usuario\\Desktop\\Nueva carpeta\\newCarpet\\Facultad\\Programacion3\\Proyectos\\TP3\\src\\imagenes\\logo_ungs.png"));
-	    MejoresOfertasFrame.setTitle("Buscar ofertas por fechas - Sala de ensayo UNGS");
-	    MejoresOfertasFrame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-	    MejoresOfertasFrame.setBounds(100, 100, 592, 401);
-	    MejoresOfertasFrame.setSize(1280, 720);
-    	MejoresOfertasFrame.setLocationRelativeTo(null);
-    	MejoresOfertasFrame.getContentPane().setLayout(null);
-    	
-    	// Le pongo un background de color #0E1012
-    	MejoresOfertasFrame.getContentPane().setBackground(new Color(14, 16, 18));
-    	
-    	JLabel lblMejoresOfertasFecha = new JLabel("Las mejores ofertas del dia: ");
-    	lblMejoresOfertasFecha.setForeground(new Color(255, 255, 255));
-    	lblMejoresOfertasFecha.setFont(new Font("Microsoft YaHei UI", Font.PLAIN, 20));
-    	lblMejoresOfertasFecha.setBounds(42, 59, 620, 27);
-    	MejoresOfertasFrame.getContentPane().add(lblMejoresOfertasFecha);
-    	
-    	JButton btnBuscarOfertas = new JButton("Maximizar Ganancia");
-    	btnBuscarOfertas.setFont(new Font("Microsoft YaHei UI", Font.PLAIN, 11));
-    	btnBuscarOfertas.addActionListener(new ActionListener() {
-    		public void actionPerformed(ActionEvent e) {
-				
-    		}
-    	});
-    	btnBuscarOfertas.setBounds(528, 610, 183, 38);
-    	MejoresOfertasFrame.getContentPane().add(btnBuscarOfertas);
-    	
-    	btnVolver = new JButton("Volver");
-    	btnVolver.setFont(new Font("Microsoft YaHei UI", Font.PLAIN, 11));
-    	btnVolver.addActionListener(new ActionListener() {
-    		public void actionPerformed(ActionEvent e) {
-    			MenuFrame menuFrame = new MenuFrame();
-    			menuFrame.setVisible(true);
-    			MejoresOfertasFrame.setVisible(false);
-    		}
-    	});
-    	btnVolver.setBounds(28, 11, 113, 38);
-    	MejoresOfertasFrame.getContentPane().add(btnVolver);
-    	
-    	JPanel panel_1 = new JPanel();
-    	panel_1.setBackground(Color.GRAY);
-    	panel_1.setBounds(28, 96, 1212, 503);
-    	MejoresOfertasFrame.getContentPane().add(panel_1);
-    	panel_1.setLayout(null);
-    	
-    	tblOferta = new JTable();
-    	tblOferta.setModel(new DefaultTableModel(null, nombreColumnas));
-    	spTablero = new JScrollPane(tblOferta);
-    	spTablero.setBounds(611, 47, 591, 325);
-    	panel_1.add(spTablero);
-    	
-    	calendario = new JCalendar();
-    	calendario.setBounds(23, 47, 546, 256);
-    	panel_1.add(calendario);
-    	
-    	JLabel lblNewLabel = new JLabel("RESULTADO");
-    	lblNewLabel.setForeground(Color.BLACK);
-    	lblNewLabel.setFont(new Font("Microsoft YaHei UI", Font.BOLD, 23));
-    	lblNewLabel.setBounds(848, 11, 202, 25);
-    	panel_1.add(lblNewLabel);
-    	
-    	JLabel lblMaximaGanancia = new JLabel("Ganancia total:");
-    	lblMaximaGanancia.setForeground(Color.BLACK);
-    	lblMaximaGanancia.setFont(new Font("Microsoft YaHei UI", Font.BOLD, 23));
-    	lblMaximaGanancia.setBounds(611, 405, 318, 39);
-    	panel_1.add(lblMaximaGanancia);
-    	calendario.setVisible(true);
-    	
+    private void initialize() {
+    	gestorOferta = new GestorOferta();
+        MejoresOfertasFrame = new JFrame();
+        MejoresOfertasFrame.setIconImage(Toolkit.getDefaultToolkit().getImage("C:\\Users\\Usuario\\Desktop\\Nueva carpeta\\newCarpet\\Facultad\\Programacion3\\Proyectos\\TP3\\src\\imagenes\\logo_ungs.png"));
+        MejoresOfertasFrame.setTitle("Buscar ofertas por fechas - Sala de ensayo UNGS");
+        MejoresOfertasFrame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        MejoresOfertasFrame.setBounds(100, 100, 592, 401);
+        MejoresOfertasFrame.setSize(1280, 720);
+        MejoresOfertasFrame.setLocationRelativeTo(null);
+        MejoresOfertasFrame.getContentPane().setLayout(null);
+        
+        // Le pongo un background de color #0E1012
+        MejoresOfertasFrame.getContentPane().setBackground(new Color(14, 16, 18));
+        
+        JLabel lblMejoresOfertasFecha = new JLabel("Las mejores ofertas del dia: ");
+        lblMejoresOfertasFecha.setForeground(new Color(255, 255, 255));
+        lblMejoresOfertasFecha.setFont(new Font("Microsoft YaHei UI", Font.PLAIN, 20));
+        lblMejoresOfertasFecha.setBounds(42, 59, 620, 27);
+        MejoresOfertasFrame.getContentPane().add(lblMejoresOfertasFecha);
+        
+        
+        btnVolver = new JButton("Volver");
+        btnVolver.setFont(new Font("Microsoft YaHei UI", Font.PLAIN, 11));
+        btnVolver.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent e) {
+                MenuFrame menuFrame = new MenuFrame();
+                menuFrame.setVisible(true);
+                MejoresOfertasFrame.setVisible(false);
+            }
+        });
+        btnVolver.setBounds(28, 11, 113, 38);
+        MejoresOfertasFrame.getContentPane().add(btnVolver);
+        
+        JPanel panel_1 = new JPanel();
+        panel_1.setBackground(Color.GRAY);
+        panel_1.setBounds(28,  96, 1212, 503);
+        MejoresOfertasFrame.getContentPane().add(panel_1);
+        panel_1.setLayout(null);
+        
+        tblOferta = new JTable();
+        tblOferta.setModel(new DefaultTableModel(null, nombreColumnas));
+        spTablero = new JScrollPane(tblOferta);
+        spTablero.setBounds(611, 47, 591, 325);
+        panel_1.add(spTablero);
+        
+        calendario = new JCalendar();
+        calendario.setBounds(23, 47, 546, 256);
+        panel_1.add(calendario);
+        
+        JLabel lblNewLabel = new JLabel("RESULTADO");
+        lblNewLabel.setForeground(Color.BLACK);
+        lblNewLabel.setFont(new Font("Microsoft YaHei UI", Font.BOLD, 23));
+        lblNewLabel.setBounds(848, 11, 202, 25);
+        panel_1.add(lblNewLabel);
+        
+        JLabel lblMaximaGanancia = new JLabel("Ganancia total:");
+        lblMaximaGanancia.setForeground(Color.BLACK);
+        lblMaximaGanancia.setFont(new Font("Microsoft YaHei UI", Font.BOLD, 23));
+        lblMaximaGanancia.setBounds(611, 405, 600, 39);
+        panel_1.add(lblMaximaGanancia);
+        calendario.setVisible(true);
+     // Botón para el algoritmo goloso
+        JButton btnAlgoritmoGoloso = new JButton("Algoritmo Goloso");
+        btnAlgoritmoGoloso.setFont(new Font("Microsoft YaHei UI", Font.PLAIN, 11));
+        btnAlgoritmoGoloso.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent e) {
+                Date fechaSeleccionada = calendario.getDate();
+                List<Oferta> todasLasOfertas = gestorOferta.obtenerOfertas(fechaSeleccionada);
+                
+                // Llamar al método resolverAdjudicacion
+                List<Oferta> mejoresOfertas = gestorOferta.resolverAdjudicacion(todasLasOfertas);
+                
+                // Mostrar las mejores ofertas en la tabla
+                mostrarOfertas(mejoresOfertas);
+                
+                // Calcular la ganancia total
+                double gananciaTotal = 0.0;
+                for (Oferta oferta : mejoresOfertas) {
+                    gananciaTotal += oferta.obtenerMontoOfrecido();
+                }
+                lblMaximaGanancia.setText("Ganancia total: " + formatearMonto(gananciaTotal));
+            }
+        });
+        btnAlgoritmoGoloso.setBounds(428, 610, 183, 38);
+        MejoresOfertasFrame.getContentPane().add(btnAlgoritmoGoloso);
+
+        // Botón para el algoritmo polinomial
+        JButton btnAlgoritmoPolinomial = new JButton("Algoritmo Polinomial");
+        btnAlgoritmoPolinomial.setFont(new Font("Microsoft YaHei UI", Font.PLAIN, 11));
+        btnAlgoritmoPolinomial.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent e) {
+                Date fechaSeleccionada = calendario.getDate();
+                List<Oferta> todasLasOfertas = gestorOferta.obtenerOfertas(fechaSeleccionada);
+                
+                // Llamar al método seleccionarOfertasMaxGananciaDP
+                List<Oferta> mejoresOfertas = gestorOferta.seleccionarOfertasMaxGananciaDP(todasLasOfertas);
+                
+                // Mostrar las mejores ofertas en la tabla
+                mostrarOfertas(mejoresOfertas);
+                
+                // Calcular la ganancia total
+                double gananciaTotal = 0.0;
+                for (Oferta oferta : mejoresOfertas) {
+                    gananciaTotal += oferta.obtenerMontoOfrecido();
+                }
+                lblMaximaGanancia.setText("Ganancia total: " + formatearMonto(gananciaTotal));
+            }
+        });
+        btnAlgoritmoPolinomial.setBounds(628, 610, 183, 38);
+        MejoresOfertasFrame.getContentPane().add(btnAlgoritmoPolinomial);
+    }
+    
+    private void mostrarOfertas(List<Oferta> mejoresOfertas) {
+        DefaultTableModel model = (DefaultTableModel) tblOferta.getModel();
+        model.setRowCount(0); // Limpiar la tabla antes de agregar nuevas filas
+        
+        for (Oferta oferta : mejoresOfertas) {
+            model.addRow(new Object[]{
+                oferta.obtenerNombreOfertante(),
+                formatearHora(oferta.obtenerHorarioInicio()),
+                formatearHora(oferta.obtenerHorarioSalida()),
+                formatearMonto(oferta.obtenerMontoOfrecido()),
+                formatearEquipamientos(oferta.obtenerEquipamientos())
+            });
+        }
     }
 	
 	private String formatearHora(Integer horario) {
@@ -150,9 +206,8 @@ public class MejoresOferasFrame {
 	}
 	
 	private String formatearMonto(Double monto) {
-	    NumberFormat formatoMoneda = NumberFormat.getCurrencyInstance(Locale.forLanguageTag("es-AR"));
-
-        return formatoMoneda.format(monto);
+		NumberFormat formatoMoneda = NumberFormat.getCurrencyInstance(Locale.forLanguageTag("es-AR"));
+	    return formatoMoneda.format(monto);
 	}
 	
 	private String formatearEquipamientos(ArrayList<String> equipamientos) {
