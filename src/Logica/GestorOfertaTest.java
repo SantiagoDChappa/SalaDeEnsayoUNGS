@@ -73,7 +73,7 @@ class GestorOfertaTest {
     
     
     @Test
-    void testSeleccionarOfertasMaxGananciaDP() {
+    void testSeleccionarOfertasMaxGanancia() {
         List<Oferta> ofertas = new ArrayList<>();
         ofertas.add(new Oferta("Juan", 9, 11, 200.0, equipamientos));
         ofertas.add(new Oferta("Maria", 12, 14, 150.0, equipamientos));
